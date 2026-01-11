@@ -1,0 +1,114 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+notebooks/.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+datasets/
+data/
+data.zip
+checkpoints/
+output/
+inference_results/
+runs/
+logs/
+log/
+*.pth
+*.pt
+*.ckpt
+*.pkl
+*.pth.tar
+weights/
+
+# Videos and large media
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+
+# OS
+Thumbs.db
+.directory
+
+# Large archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Config with sensitive info
+config_local.yaml
+secrets.yaml
