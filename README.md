@@ -1,6 +1,8 @@
-# 🚗 3DGazeNet: Driver Monitoring System (DMS) using 3D Gaze Estimation
+# 🚗 3DGazeNet: End-to-End Driver Monitoring System for Autonomous Driving Safety
 
-## An AI based Computer Vision System for Autonomous Driving Safety
+## An AI-Based Computer Vision System for Interior Monitoring and Driver Alertness Assessment
+
+**Project:** End-to-End Development of an Interior Monitoring System for Autonomous Driving Safety Applications
 
 3DGazeNet is a general gaze estimation model that can be directly employed in novel environments without fine-tuning or adaptation. This approach leverages 3D eye mesh regression combined with multi-view consistency constraints to achieve robust gaze estimation across diverse scenarios.
 
@@ -25,7 +27,18 @@ This project is a **non-intrusive Driver Monitoring System (DMS)** developed to 
 
 - **Driver Monitoring System (DMS):** Focuses specifically on the driver - tracking their gaze direction, head position, blink rate, and signs of drowsiness or distraction. Think of it as a "safety guardian" that watches only the person controlling the vehicle.
 
-- **Occupant Monitoring System:** Goes beyond the driver to monitor ALL passengers in the vehicle. It tracks everyone's seating position and body size to ensure airbags and safety restraints deploy correctly for each person. This is especially important as cars become more automated and passengers have more freedom to move around.
+  **Real-World Impact:**
+  - Reduces distraction-related crashes by up to **23%**
+  - Enables adaptive safety interventions (e.g., pre-tensioning seat belts when drowsiness detected)
+  - Meets upcoming Euro NCAP requirements for Level 3+ automated vehicles
+  - Can prevent accidents before they happen by alerting drowsy drivers
+
+- **Occupant Monitoring System (OMS):** Goes beyond the driver to monitor ALL passengers in the vehicle. It tracks everyone's seating position and body size to ensure airbags and safety restraints deploy correctly for each person. This is especially important as cars become more automated and passengers have more freedom to move around.
+
+  **Key Benefits:**
+  - Optimizes airbag deployment force and angle based on passenger size and position
+  - Detects unauthorized or unexpected occupant configurations (e.g., rear-seat child without booster)
+  - Enhances overall vehicle safety, particularly in shared-mobility and automated-shuttle scenarios
 
 This project focuses on DMS but lays the groundwork for full occupant monitoring in future autonomous vehicles.
 
@@ -56,6 +69,94 @@ The system is trained using multiple datasets and can work immediately in new se
 | **Logic/Intersection** | **Möller-Trumbore Algorithm** | Calculates where the 3D gaze vector "hits" the 3D model of the car dashboard. |
 | **Smoothing** | **Kalman Filter** | Reduces the "jitter" or shaking of the gaze vector to provide a stable reading. |
 | **Hardware** | **FLIR Firefly FFY-U3-16S2C-S** + **Evetar 8mm Lens** | Industrial-grade camera with global shutter (no motion blur) + wide-angle lens. Also tested with Logitech C920 for consumer applications. |
+
+---
+
+## 📷 Hardware Specifications & Installation
+
+### Camera: FLIR Firefly FFY-U3-16S2C-S
+
+This is an **industrial-grade camera** built for demanding automotive applications:
+
+**Key Specifications:**
+- **Sensor:** Sony IMX296 (1/2.9-inch CMOS, 1.6 MP)
+- **Resolution:** 1440 × 1080 pixels (Full HD quality)
+- **Frame Rate:** Up to 60 FPS
+- **Shutter Type:** **Global Shutter** - Captures entire image instantly (no motion blur during fast head turns)
+- **Pixel Size:** 3.45 µm
+- **Interface:** USB 3.0 Gen 1
+- **Size:** 27mm × 27mm × 14mm (very compact)
+- **Operating Temperature:** -40°C to +85°C (automotive grade)
+
+**Why This Camera?**
+- ✅ No motion blur during quick head movements
+- ✅ Low-light performance for night driving
+- ✅ Compact enough to hide in dashboard
+- ✅ Industrial reliability for 24/7 operation
+
+### Lens: Evetar M118B081 (8mm f/1.8)
+
+**Key Specifications:**
+- **Focal Length:** 8mm
+- **Aperture:** f/1.8 (large opening = excellent low-light performance)
+- **Field of View:** ~70° horizontal (wide enough to see entire driver face and shoulders)
+- **Image Format:** Compatible with 1/1.8" sensors
+- **Mount:** M12 (standard industrial mount)
+- **Focus:** Fixed focus (optimized for 50-80cm driver distance)
+- **Expected Distortion:** Moderate barrel distortion (corrected via calibration)
+
+**Why This Lens?**
+- Wide coverage without extreme fisheye effect
+- Works in dim cabin lighting (large f/1.8 aperture)
+- Minimal distortion compared to ultra-wide lenses
+- Perfect for typical driver-to-camera distance
+
+### Camera Bracket Design & Installation
+
+**Design Evolution:**
+
+**Version 1 (Prototype):**
+- Adjustable design for testing: 4 height levels (10mm steps) + angular adjustments (10° increments)
+- Mounted with zip ties and double-sided tape for easy repositioning
+- Purpose: Find optimal camera position through trial and error
+
+**Version 2 (Final Production):**
+- Fixed optimal position based on testing results
+- Sleek enclosed casing that hides camera and cables
+- Professional appearance suitable for vehicle integration
+- Still allows fine angular adjustments for different vehicle models
+- Material: PETG 3D-printed plastic
+
+**Installation Location Options:**
+
+| Location | Advantages | Disadvantages |
+|:---------|:-----------|:--------------|
+| **Dashboard (Center)** | ✅ No steering wheel occlusion<br>✅ Unobstructed view<br>✅ Good field of view | ❌ Fully exposed to direct sunlight<br>❌ Looks out of place |
+| **Steering Column (Chosen)** | ✅ Protected from direct sunlight<br>✅ Good field of view<br>✅ Better aesthetics<br>✅ Natural mounting location | ⚠️ Partial cluster occlusion<br>⚠️ Occasional steering wheel blocking |
+
+**Final Position:** Steering column was selected because:
+- Protection from sunlight reduces glare and temperature issues
+- Occlusion during steering is minimal and temporary
+- Professional appearance maintains vehicle interior design
+- Easier cable routing and integration
+
+### Temperature Considerations (Important for Real-World Deployment)
+
+**Challenge:** Car interiors get extremely hot in summer (up to 70-80°C in direct sunlight).
+
+**Current Bracket Material:**
+- **PETG Plastic:** Heat Deflection Temperature (HDT) = 70°C
+- ⚠️ **Risk:** May deform in extreme summer heat
+- ✅ **Camera Tolerance:** FLIR Firefly rated up to 85°C (sufficient)
+
+**Future Improvement:**
+- **Polycarbonate Filament:** HDT = 140°C (much more heat-resistant)
+- Additional heat sink for camera module cooling
+- Thermal testing to identify actual peak operating temperatures
+- Ventilation channels in bracket design
+
+**Why This Matters:**
+A deformed camera bracket means misaligned camera = inaccurate gaze estimation. For production vehicles, heat-resistant materials and thermal management are critical.
 
 ---
 
@@ -140,6 +241,19 @@ Euro NCAP (European New Car Assessment Programme) is the organization that gives
 - Must detect distraction when driver looks away for >2 seconds
 - Must work in various lighting conditions (day, night, twilight)
 - Must be non-intrusive (no wearables required)
+- **DMS must be ON by default** (driver cannot disable it)
+- Must function for at least **1 minute of driving at 10 km/h**
+- Distraction, microsleep, and sleep detection required at **20 km/h or higher**
+
+**Karolinska Sleepiness Scale (KSS) - Measuring Drowsiness Levels**
+
+Our system aligns with the **KSS**, a widely used scale in automotive safety research that rates alertness from 1 (extremely alert) to 9 (extremely sleepy). We detect three critical states:
+
+- **Level 7-8 (Microsleep):** Brief eye closures (1-2 seconds) - Early warning stage
+- **Level 8-9 (Sleepy Behavior):** Extended eye closure (3+ seconds) - High-risk drowsiness
+- **Level 9 (Unresponsive Driver):** Prolonged eye closure (6+ seconds) - Critical emergency state
+
+This scientific approach ensures our alerts match real drowsiness levels, reducing false alarms while catching genuine safety risks.
 
 Our system meets these standards by implementing all required detection capabilities and providing real-time alerts.
 
@@ -197,6 +311,52 @@ If the driver normally sits 65cm away but suddenly leans forward to 45cm, the sy
 - Reaching for something (temporary distraction)
 
 The **EAR** + **MAR** + **Distance** combination provides comprehensive drowsiness detection aligned with EuroNCAP protocols.
+
+### Drowsiness Detection Performance Results
+
+We tested the drowsiness detection system on **906 frames without occlusions** and **505 frames with occlusions** (hands on steering wheel, phone, etc.). Here are the results:
+
+**Without Occlusions (Clear View of Face):**
+
+| Drowsiness State | Accuracy | Precision | Recall | F1-Score |
+|:-----------------|:--------:|:---------:|:------:|:--------:|
+| **Microsleep** (1-2 sec eyes closed) | 84.85% | 1.00 | 0.85 | 0.92 |
+| **Sleepy Behavior** (3+ sec closed) | 94.51% | 0.95 | 0.95 | 0.95 |
+| **Unresponsive Driver** (6+ sec) | 100.00% | 0.93 | 1.00 | 0.96 |
+| **Overall System Accuracy** | **94.62%** | - | - | - |
+
+**With Occlusions (Partial Face Blocking):**
+
+| Drowsiness State | Accuracy | Notes |
+|:-----------------|:--------:|:------|
+| **Microsleep** | 72.88% | Performance drops but still functional |
+| **Sleepy Behavior** | 100.00% | Robust even with occlusions |
+
+**What These Numbers Mean:**
+
+✅ **Microsleep Detection (Without Occlusion):**
+- Precision = 1.00 → Every time the system says "microsleep," it's correct (zero false alarms)
+- Recall = 0.85 → Catches 85% of actual microsleep events
+- The system is conservative - prefers to miss some events rather than false alarm
+
+✅ **Sleepy Behavior Detection:**
+- 95% precision & recall → Near-perfect balance
+- Reliably identifies when drivers are getting drowsy
+- Critical safety threshold with high confidence
+
+✅ **Unresponsive Driver:**
+- Recall = 1.00 → **Never misses an unresponsive driver**
+- Precision = 0.93 → Very few false positives
+- Most critical safety feature works flawlessly
+
+⚠️ **Impact of Occlusions:**
+- Microsleep accuracy drops from 84.85% → 72.88% when face is partially blocked
+- **Why?** Hands on steering wheel or phone can hide eye landmarks
+- Sleepy behavior remains 100% accurate (even with occlusions)
+- System is still functional but less precise when view is obstructed
+
+**Practical Implication:**
+The system excels at detecting serious drowsiness (sleepy behavior and unresponsive states) with >94% accuracy, making it highly reliable for real-world safety applications. While partial occlusions reduce microsleep detection accuracy, the system still maintains 73% accuracy - better than having no monitoring at all.
 
 ---
 
@@ -412,6 +572,40 @@ After recording, every frame was **manually labeled** with the gaze zone (1-9). 
 | **Side Mirrors** | **Lower** | Worst performance due to extreme head rotation angles. |
 | **Overall** | **90.5%** | Robust for general safety monitoring. |
 
+### Detailed Performance Metrics (Gaze Zone Detection)
+
+Beyond overall accuracy, we measured **Precision**, **Recall**, and **F1-Score** for each zone:
+
+| Zone | Precision | Recall | F1-Score | Total Frames | Detected Frames |
+|:-----|:---------:|:------:|:--------:|:------------:|:---------------:|
+| **Normal Driving (Road)** | 0.913 | 0.992 | 0.951 | 6,645 | 6,066 |
+| **Infotainment** | 0.934 | 0.719 | 0.813 | 420 | 392 |
+| **Rear Mirror** | 1.000 | 0.508 | 0.674 | 240 | 240 |
+| **Passenger Footwell** | 0.733 | 0.632 | 0.679 | 150 | 110 |
+| **Passenger Side Window** | 0.803 | 0.534 | 0.641 | 300 | 240 |
+| **Phone on Wheel** | 0.951 | 0.487 | 0.644 | 300 | 285 |
+| **Passenger Face** | 0.538 | 0.127 | 0.206 | 120 | 64 |
+| **Driver Side Window** | 0.277 | 0.146 | 0.191 | 120 | 33 |
+| **Rear Passenger** | 0.000 | 0.000 | 0.000 | 120 | 0 |
+| **Overall Accuracy** | **0.905** | **0.905** | **0.905** | **8,415** | **7,430** |
+
+**What These Metrics Mean:**
+
+- **Precision:** When the system says the driver is looking at a zone, how often is it correct?
+  - Example: Rear Mirror has 100% precision - every detection was correct (no false positives)
+
+- **Recall:** Out of all the times the driver actually looked at that zone, how many did the system catch?
+  - Example: Normal Driving has 99.2% recall - it almost never misses when driver looks at the road
+
+- **F1-Score:** The balanced average of Precision and Recall (best when both are high)
+  - Example: Normal Driving has the highest F1-score (0.951) - excellent all-around performance
+
+**Key Observations:**
+- ✅ **Best Performance:** Normal driving position (forward gaze) - critical for safety
+- ✅ **Strong Detection:** Infotainment screen and dashboard areas
+- ⚠️ **Challenging Zones:** Extreme side glances (driver window, rear passenger) have lower accuracy due to severe head rotation
+- ❌ **Limitation:** Rear passenger zone (0% detection) - requires additional camera or different mounting position
+
 ### Real-Time Performance (Hardware Challenges)
 **Initial Challenge:**  
 The system was first tested on an **NVIDIA Jetson Nano** (a small, embedded computer designed for AI projects).
@@ -421,6 +615,139 @@ The system was first tested on an **NVIDIA Jetson Nano** (a small, embedded comp
 * **Compatibility Verified:** The code was tested on the car's Linux computer system and works correctly, proving it can run on different platforms (the Jetson Nano just needs optimization to run faster).
 
 **Takeaway:** The system works in real-time on standard laptop hardware. Future work will optimize it to run efficiently on smaller embedded devices.
+
+### 🎯 Jetson Nano Deployment: Challenges & Solutions
+
+**What is Jetson Nano?**
+
+The NVIDIA Jetson Nano is a small, powerful computer designed for AI and robotics projects. It's affordable (~$100) and energy-efficient, making it ideal for embedding in vehicles.
+
+**Hardware Specifications:**
+- **CPU:** Quad-core ARM Cortex-A57
+- **GPU:** NVIDIA Maxwell (128 CUDA cores)
+- **RAM:** 2GB LPDDR4 (4GB version also available)
+- **Storage:** MicroSD card
+- **Power:** 5W - 10W (very efficient)
+- **Ports:** USB 3.0, HDMI, GPIO pins
+- **Size:** Compact, fits in palm of hand
+
+**Why Try Jetson Nano?**
+- Affordable and accessible for prototyping
+- Low power consumption (can run on battery)
+- Designed specifically for AI inference
+- Strong community support
+- Compact enough to install in vehicle dashboard
+
+### Implementation Attempt & Challenges
+
+**Setup Process:**
+1. ✅ Flashed Jetson Nano 2GB with JetPack 4.6 image using balenaEtcher
+2. ✅ Created bootable SD card with official NVIDIA image
+3. ✅ Connected WiFi, monitor, keyboard
+4. ✅ Performed first-time setup and user configuration
+
+**Part 1: Gaze Detection Model (3DGazeNet)**
+
+**Required Libraries:**
+| Library | Purpose | Installation Status |
+|:--------|:--------|:-------------------|
+| numpy | Matrix operations & gaze vector calculation | ✅ Success |
+| opencv | Video frame processing | ✅ Success |
+| torch (PyTorch) | Deep learning model execution | ❌ **FAILED** |
+| tqdm | Progress bars | ✅ Success |
+| easydict | YAML config handling | ✅ Success |
+| pyyaml | Configuration files | ✅ Success |
+| scipy | Geometry calculations | ✅ Success |
+| Cython | Required by PyTorch | ✅ Success |
+
+**Critical Problem: PyTorch Installation Failure**
+
+**Error Encountered:**
+```bash
+>>> import torch
+Illegal instruction (core dumped)
+```
+
+**What We Tried:**
+- Downloaded PyTorch v1.10.0 wheel file for ARM architecture (aarch64)
+- Ensured Python 3.6 compatibility with JetPack 4.6
+- Tried multiple official PyTorch versions from NVIDIA's website
+- All versions produced the same "Illegal instruction" error
+
+**Root Cause:**
+The pre-compiled PyTorch wheels are not fully compatible with the Jetson Nano 2GB hardware architecture. The CPU instruction set mismatch causes the crash.
+
+**Status: Ongoing**
+NVIDIA support team requested full installation logs and suggested:
+- Custom PyTorch build from source (time-consuming, ~6-8 hours compilation)
+- Hardware-specific compilation flags
+- Alternative: Use Jetson Xavier NX (more powerful, better compatibility)
+
+**Part 2: Depth Estimation & Drowsiness Detection**
+
+**Libraries Used:**
+| Library | Version | Status |
+|:--------|:--------|:-------|
+| Python | 3.6.9 | ✅ Success |
+| OpenCV | 4.11 | ✅ Success (manual wheel install) |
+| MediaPipe | v0.8.5 | ⚠️ Limited (see below) |
+| NumPy | Latest | ✅ Success |
+
+**Critical Limitation: MediaPipe Version Constraint**
+
+**The Problem:**
+```python
+face_mesh = mp_face_mesh.FaceMesh(refine_landmarks=True)
+# ❌ Error: refine_landmarks parameter not supported in v0.8.5
+```
+
+**Why This Matters:**
+- MediaPipe v0.8.5 is the newest version compatible with Python 3.6 and JetPack 4.6
+- The `refine_landmarks=True` parameter is needed to detect **iris landmarks**
+- Without iris landmarks:
+  - ❌ Depth estimation fails (needs pupil distance measurement)
+  - ❌ Precise gaze direction unavailable
+  - ❌ Drowsiness detection incomplete (relies on eye tracking)
+
+**What Still Works on Jetson Nano:**
+- ✅ **Head Pose Estimation:** Yaw, Pitch, Roll angles
+- ✅ **Distraction Detection:** Based on yaw angle (head turning)
+- ✅ Basic facial landmark tracking (468 points, but no iris refinement)
+
+**What Doesn't Work:**
+- ❌ Iris-based depth estimation
+- ❌ Precise eye tracking for drowsiness
+- ❌ Blink detection (requires iris landmarks)
+- ❌ Complete EAR calculation
+
+### Current Status & Recommendations
+
+**Summary:**
+- **Gaze Detection (3DGazeNet):** ❌ Blocked by PyTorch compatibility issues
+- **Drowsiness Detection:** ⚠️ Partially working (head pose only, no eye tracking)
+- **Performance:** 5-8 FPS (even for limited functionality)
+
+**Recommendations for Future Deployment:**
+
+**Option 1: Upgrade to Jetson Xavier NX (~$400)**
+- More powerful GPU (384 CUDA cores vs 128)
+- 8GB RAM (vs 2GB)
+- Better PyTorch compatibility
+- Expected performance: 30+ FPS with full functionality
+
+**Option 2: Optimize for Jetson Nano**
+- Compile PyTorch from source with Nano-specific flags (1-2 weeks effort)
+- Use TensorRT to optimize model (3-5x speedup possible)
+- Reduce input resolution (e.g., 112×112 instead of 224×224)
+- Model quantization (FP16 instead of FP32)
+
+**Option 3: Cloud-Connected Hybrid**
+- Run head pose and distraction on Jetson Nano (works now)
+- Stream video to cloud server for full gaze analysis (requires 4G/5G)
+- Hybrid approach: local for critical alerts, cloud for detailed analytics
+
+**Lesson Learned:**
+While Jetson Nano is excellent for learning and prototyping, **production DMS systems require more powerful hardware** (Jetson Xavier or automotive-grade ECUs) to achieve 30 FPS with full feature set and safety reliability.
 
 ---
 
@@ -717,4 +1044,11 @@ This project is provided for research and educational purposes.
 
 ## Acknowledgments
 
-This implementation extends the original 3DGazeNet framework with integrated functionality for comprehensive eye-based behavior analysis and driver monitoring system applications.
+**This project was developed as a collaborative team effort at Technische Hochschule Ingolstadt (THI).** 
+
+The implementation extends the original 3DGazeNet framework with integrated functionality for comprehensive eye-based behavior analysis and driver monitoring system applications. Our team combined expertise in computer vision, hardware engineering, data collection, and embedded systems to create an end-to-end interior monitoring solution for autonomous driving safety applications.
+
+We acknowledge the contributions of all team members who made this project possible through their dedication to research, development, testing, and validation in real-world automotive environments.
+
+**Institution:** Technische Hochschule Ingolstadt (THI), Germany    
+**Supervision:** Prof. Alessandro Zimmer & Dipl.-Ing. Joed Lopes da Silva
