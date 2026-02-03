@@ -1,16 +1,18 @@
 # 🚗 3DGazeNet: Driver Monitoring System (DMS) using 3D Gaze Estimation
 
-## 🧠 An AI-Powered Computer Vision System for Autonomous Driving Safety
+## An AI based Computer Vision System for Autonomous Driving Safety
 
 3DGazeNet is a general gaze estimation model that can be directly employed in novel environments without fine-tuning or adaptation. This approach leverages 3D eye mesh regression combined with multi-view consistency constraints to achieve robust gaze estimation across diverse scenarios.
 
 ---
 
-## 📖 Executive Summary
+## Motivation
 
-**The Problem:** According to the **World Health Organization (WHO)**, approximately **1.35 million people** die annually from road traffic crashes, with human error (distraction and fatigue) being a leading cause.
+According to the **World Health Organization (WHO)**, approximately **1.35 million people** die annually from road traffic crashes, with human error (distraction and fatigue) being a leading cause.
 
-**The Solution:** This project is a **non-intrusive Driver Monitoring System (DMS)** developed to assess driver alertness in real-time using a standard monocular camera. Unlike older systems that require expensive hardware or wearables, this system uses **Deep Learning (ResNet-18)** and **Geometric Computer Vision** to detect:
+## Solution
+
+This project is a **non-intrusive Driver Monitoring System (DMS)** developed to assess driver alertness in real-time using a standard monocular camera. Unlike older systems that require expensive hardware or wearables, this system uses **Deep Learning (ResNet-18)** and **Geometric Computer Vision** to detect:
 1. **Gaze Direction:** Determining exactly where the driver is looking (e.g., *Side Mirror, Infotainment, Road*).
 2. **Drowsiness:** Detecting micro-sleeps and yawning patterns based on **EuroNCAP standards**.
 3. **Distraction:** Identifying when the driver's head is averted for unsafe durations.
@@ -58,42 +60,48 @@ This project supports training and inference on multiple public gaze estimation 
 
 ---
 
-## ⚙️ How It Works: The "Under the Hood" Logic
+## ⚙️ How It Works
 
-### 1. 3D Gaze Estimation (The Deep Learning Core)
-We utilized an appearance-based method adapted from **Park et al. (3D GazeNet)**.
-* **Why ResNet-18?** We chose a Residual Network backbone to solve the **Vanishing Gradient Problem** using "skip connections." This allows the model to learn deep features from the eye images without losing signal during backpropagation.
+### 1. 3D Gaze Estimation
+This implementation employs an appearance-based method adapted from **Park et al. (3D GazeNet)**.
+* **Architecture:** ResNet-18 is used as the backbone to address the vanishing gradient problem through skip connections, enabling effective learning of deep features from eye images.
 * **Inputs:** Left Eye Image ($224 \times 224$) + Right Eye Image ($224 \times 224$) + Head Pose Angles (Yaw, Pitch).
-* **Outputs:** A 3D Unit Vector ($g_x, g_y, g_z$).
+* **Outputs:** 3D Unit Vector ($g_x, g_y, g_z$).
 
 **Data Normalization:**
-To make the model robust against different driver positions, we "warped" the eye images to a standardized "Virtual Camera" view using this transformation matrix:
+Eye images are warped to a standardized virtual camera view using the following transformation matrix to ensure robustness across different driver positions:
 $$W = S \cdot R \cdot K^{-1}$$
 *(Where $S$ is scaling, $R$ is rotation from head pose, and $K$ is the camera intrinsic matrix.)*
 
-### 2. Gaze Mapping (The "Laser Beam" Logic)
-Once the model outputs a vector (think of it as a laser beam shooting from the eye), we need to know **what** it hit.
-* We created a 3D virtual map of the car interior with **9 Areas of Interest (AOIs)** (e.g., Left Mirror, Radio, Speedometer).
-* We used the **Möller-Trumbore Intersection Algorithm** to mathematically calculate if the gaze vector intersects with any of these AOI planes.
+### 2. Gaze Mapping
+The gaze vector is mapped to specific regions of interest within the vehicle interior using geometric algorithms.
+* A 3D virtual model of the car interior defines **9 Areas of Interest (AOIs)** (e.g., Left Mirror, Radio, Speedometer).
+* The **Möller-Trumbore Intersection Algorithm** calculates whether the gaze vector intersects with any of these predefined AOI planes.
 
-### 3. Drowsiness & Fatigue Detection (The Mathematical Standards)
-We adhered to **EuroNCAP** safety protocols to classify driver state. This is calculated using facial landmarks extracted via MediaPipe.
+### 3. Drowsiness & Fatigue Detection
+Driver state classification follows **EuroNCAP** safety standards using facial landmarks extracted via MediaPipe.
 
-#### **A. Eye Aspect Ratio (EAR)** - *Detecting Sleep*
-This formula measures how "open" the eye is.
+#### **A. Eye Aspect Ratio (EAR)**
+Eye Aspect Ratio quantifies the degree of eye opening:
+
 $$EAR = \frac{||p_2 - p_6|| + ||p_3 - p_5||}{2 ||p_1 - p_4||}$$
-* **Microsleep:** If EAR < Threshold for **> 3 seconds**.
-* **Unresponsive:** If EAR < Threshold for **> 6 seconds** (Critical Warning).
 
-#### **B. Mouth Aspect Ratio (MAR)** - *Detecting Yawning*
+* **Microsleep Detection:** EAR below threshold for > 3 seconds indicates fatigue.
+* **Unresponsive State:** EAR below threshold for > 6 seconds triggers critical alert.
+
+#### **B. Mouth Aspect Ratio (MAR)**
+
 $$MAR = \frac{||p_{51} - p_{59}|| + ||p_{52} - p_{58}|| + ||p_{53} - p_{57}||}{3 ||p_{49} - p_{55}||}$$
-* Triggers a warning if the mouth remains wide open (yawn) beyond a specific time threshold.
+
+* Yawn detection is triggered when MAR exceeds the defined threshold for a sustained duration.
 
 #### **C. Monocular Depth Estimation**
-We estimated the distance ($D$) of the driver from the camera to ensure they are in a safe position:
+Driver distance from the camera is estimated using monocular depth calculation:
+
 $$D = \frac{F \times W}{P}$$
+
 * $F$: Focal Length (from camera calibration).
-* $W$: Average Inter-pupillary distance (~63mm).
+* $W$: Average inter-pupillary distance (~63mm).
 * $P$: Pixel width between eyes on the sensor.
 
 ---
@@ -112,16 +120,16 @@ For a demo of 3DGazeNet on videos and single images visit the [demo folder](demo
 ---
 
 
-## 🧪 Experimental Setup (The "BMW Lab Car")
+## Experimental Setup
 
-To validate the system without the legal risks of open-road testing, we utilized the **AI Motion Lab BMW Vehicle**.
+Validation was conducted using a stationary **AI Motion Lab vehicle** to enable controlled testing without safety risks associated with open-road evaluation.
 
-* **Scenario:** The car was stationary, but participants simulated driving tasks (checking mirrors, turning the steering wheel).
-* **Occlusion Testing:** A key part of the experiment was ensuring the camera could still track the face even when the driver's hands crossed the steering wheel (blocking part of the view).
-* **Dataset:**
-    * **27 Videos** collected (30s each).
-    * **5 Diverse Participants** (varying heights, glasses vs. no glasses).
-    * **9 Target Zones** (Mirrors, Windshield, Center Stack, Road, Infotainment, etc.).
+* **Testing Scenario:** Participants performed simulated driving tasks including mirror checking and steering wheel manipulation.
+* **Occlusion Robustness:** The system was tested for camera robustness to facial occlusion caused by hands during steering wheel operations.
+* **Dataset Characteristics:**
+    * **27 Video sequences** collected at 30 seconds duration each.
+    * **5 Participants** with diverse characteristics (height, presence/absence of corrective eyewear).
+    * **9 Areas of Interest** mapped within the vehicle (mirrors, windshield, center stack, road, infotainment, etc.).
 
 ---
 
@@ -136,11 +144,11 @@ To validate the system without the legal risks of open-road testing, we utilized
 | **Side Mirrors** | **Lower** | Worst performance due to extreme head rotation angles. |
 | **Overall** | **90.5%** | Robust for general safety monitoring. |
 
-### The "Real-Time" Engineering Challenge
-We initially attempted to run the full pipeline on an **NVIDIA Jetson Nano** (embedded computer).
-* **Problem:** The 3D GazeNet model was too computationally heavy for the Nano, resulting in **5-8 FPS** (too slow for safety).
-* **Solution:** We offloaded the inference to a **Laptop with a dedicated GPU**, achieving **~30 FPS** (Real-time).
-* **Verification:** The code was later verified by supervisors on the car's internal Linux system, proving compatibility despite the hardware bottleneck.
+### Real-Time Performance Considerations
+Initial implementation on **NVIDIA Jetson Nano** (embedded hardware) demonstrated computational constraints:
+* **Performance Limitation:** The 3D GazeNet model achieved only **5-8 FPS** on Jetson Nano, insufficient for real-time safety applications.
+* **Implementation Solution:** Inference was relocated to **laptop GPU**, achieving **~30 FPS** for real-time operation.
+* **System Compatibility:** Code was verified on the vehicle's internal Linux system, confirming cross-platform compatibility despite hardware optimization requirements.
 
 ---
 
@@ -310,10 +318,10 @@ These features are integrated into `demo/inference_video_integrated.py` for comp
 
 ---
 
-## 🔮 Future Work
-1. **Model Quantization:** Pruning the ResNet-18 model to allow it to run on the Jetson Nano at 30 FPS.
-2. **Night Mode:** Integrating an **IR (Infrared) Camera** to allow monitoring in total darkness (RGB cameras fail at night).
-3. **Personalization:** Adding a 5-second "calibration phase" for new drivers to learn their specific eye shape, improving accuracy.
+## Future Work
+1. **Model Optimization:** Model pruning and quantization to enable efficient execution on embedded devices (Jetson Nano) at 30 FPS.
+2. **Infrared Integration:** Incorporation of **IR (Infrared) camera** technology to extend monitoring capabilities to low-light and nighttime conditions.
+3. **Personalization Framework:** Implementation of user calibration protocols to adapt gaze estimation to individual driver characteristics.
 
 ---
 
@@ -338,4 +346,4 @@ This project is provided for research and educational purposes.
 
 ## Acknowledgments
 
-This work builds upon the original 3DGazeNet framework and extends it with additional functionality for comprehensive eye-based behavior analysis in a group project context.
+This implementation extends the original 3DGazeNet framework with integrated functionality for comprehensive eye-based behavior analysis and driver monitoring system applications.
